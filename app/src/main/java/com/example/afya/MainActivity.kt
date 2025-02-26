@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
@@ -20,6 +21,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -78,8 +80,7 @@ fun FirstUI() {
         medicines.filter { it.first.contains(searchQuery, ignoreCase = true) }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         // **Top Image Banner**
         Image(
@@ -88,13 +89,9 @@ fun FirstUI() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp)
-
-
-
-
         )
 
-        // **Search Bar**
+        // **Search Bar with Profile Picture**
         SearchInputBar(searchQuery, onSearch = { query -> searchQuery = query })
 
         // **Medicine Grid (2 per row) with Proper Spacing**
@@ -121,9 +118,7 @@ fun FirstUI() {
 
 @Composable
 fun BottomNavigationBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
-    NavigationBar(
-        containerColor = Color.White
-    ) {
+    NavigationBar(containerColor = Color.White) {
         NavigationBarItem(
             icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
             label = { Text("Home") },
@@ -147,14 +142,30 @@ fun BottomNavigationBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
 
 @Composable
 fun SearchInputBar(searchQuery: String, onSearch: (String) -> Unit) {
-    OutlinedTextField(
-        value = searchQuery,
-        onValueChange = onSearch,
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        placeholder = { Text("Search medicine...") }
-    )
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = onSearch,
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 8.dp),
+            placeholder = { Text("Search medicine...") }
+        )
+
+        Image(
+            painter = painterResource(id = R.drawable.profile), // Replace with actual profile image
+            contentDescription = "Profile Picture",
+            modifier = Modifier
+                .size(60.dp)
+                .clip(CircleShape)
+                .background(Color.Gray) // Default background in case of no image
+        )
+    }
 }
 
 @Composable
@@ -199,20 +210,18 @@ fun MedicineCard(medicineName: String, imageRes: Int, modifier: Modifier) {
                 Button(
                     onClick = { /* Call Action */ },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
-                    modifier = Modifier.weight(0.2f)
+                    modifier = Modifier.weight(1f)
                 ) {
                     Icon(Icons.Filled.Call, contentDescription = "Call", tint = Color.White)
-                    Spacer(modifier = Modifier.width(0.2.dp))
                     Text("Call", fontSize = 0.2.sp, color = Color.White)
                 }
 
                 Button(
                     onClick = { /* Show Description */ },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3)),
-                    modifier = Modifier.weight(0.2f)
+                    modifier = Modifier.weight(1f)
                 ) {
                     Icon(Icons.Filled.Info, contentDescription = "Info", tint = Color.White)
-                    Spacer(modifier = Modifier.width(0.2.dp))
                     Text("Description", fontSize = 0.2.sp, color = Color.White)
                 }
             }
